@@ -35,6 +35,10 @@
                         title: '统计',
                         subs: [
                             {
+                                index: 'realtime',
+                                title: '实时数据'
+                            },
+                            {
                                 index: 'vuetable',
                                 title: '日常统计数据'
                             },

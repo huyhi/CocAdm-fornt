@@ -21,7 +21,7 @@
                 </el-option>
             </el-select>
         </div>
-        <el-table :data="seasonStatistic" border style="width: 100%" ref="multipleTable">
+        <el-table :data="seasonStatistic" border ref="multipleTable">
             <el-table-column type="index" :index="indexMethod" label="序号" width="70">
             </el-table-column>
             <el-table-column prop="tag" label="标签" width="150">
@@ -68,7 +68,7 @@
     export default {
         data() {
             return {
-                api: `${apiMap.seasonList}`,
+                api: apiMap.seasonList,
                 seasonList: [],
                 seasonStatistic: [],
                 tableData: [],

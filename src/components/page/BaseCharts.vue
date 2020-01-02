@@ -82,5 +82,5 @@
         font-size: 22px;
         color: #1f2f3d;
     }
-    
+
 </style>

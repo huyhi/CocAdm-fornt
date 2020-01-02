@@ -36,7 +36,6 @@
                 <br>
             </article>
         </div>
-
     </div>
 </template>
 

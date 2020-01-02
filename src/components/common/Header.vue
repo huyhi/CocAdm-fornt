@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="logo">COC Data platformgit</div>
+        <div class="logo">COC Data platform</div>
         <div class="user-info">
             <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
