@@ -35,8 +35,8 @@
                     :tag="item.tag"
                     @click="handleClickPlayerBlock">
                     <el-row>
-                        <el-col :span="20"><div class="grid-content"> {{ item.tag }} </div></el-col>
-                        <el-col :span="4"><div class="grid-content"> LV: {{ item.expLevel }} </div></el-col>
+                        <el-col :span="18"><div class="grid-content"> {{ item.tag }} </div></el-col>
+                        <el-col :span="6"><div class="grid-content"> LV: {{ item.expLevel }} </div></el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="24"><div class="grid-content"> {{ item.name }} </div></el-col>
@@ -88,14 +88,20 @@
         padding: 0 5em;
     }
     .block-container{
-        border: 1px solid black;
         border-radius: 4px;
         margin-top: 2em;
     }
     .one-block-content{
-        border: 1px solid deepskyblue;
-        border-radius: 4px;
+        border: 1px solid black;
+        background-color: #D9ECFF;
+        transition: 0.3s;
+        cursor: pointer;
+        border-radius: 1em;
+        padding: 1em;
         min-height: 8em;
+    }
+    .one-block-content:hover{
+        background-color: #79BBFF;
     }
 
 </style>
