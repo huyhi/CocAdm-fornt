@@ -2,8 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 表格</el-breadcrumb-item>
-                <el-breadcrumb-item>基础表格</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-menu"></i> 赛季表格 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="handle-box">
@@ -63,12 +62,12 @@
 </template>
 
 <script>
-    import {apiMap} from "../../../config/api-conf"
+    import {apiMapBackend} from "../../../config/api-conf"
 
     export default {
         data() {
             return {
-                api: apiMap.seasonList,
+                api: apiMapBackend.seasonList,
                 seasonList: [],
                 seasonStatistic: [],
                 tableData: [],
@@ -111,14 +110,16 @@
                 let self = this;
                 self.$axios.get(self.api).then((res) => {
                     self.seasonList = res.data.data;
-                    console.log(self.seasonList)
+                }).catch(err => {
+                    self.showHttpErrorMsg()
                 })
             },
             selectChange(){
                 const self = this
                 self.$axios.get(`${self.api}${self.selectSeasonId}`).then((res) => {
                     self.seasonStatistic = res.data.data;
-                    console.log(self.seasonStatistic)
+                }).catch(err => {
+                    self.showHttpErrorMsg()
                 })
             },
             indexMethod(idx) {
@@ -136,6 +137,14 @@
             handleDelete(index, row) {
                 this.$message.error('删除第'+(index+1)+'行');
             },
+            showHttpErrorMsg() {
+                this.$message({
+                    showClose: true,
+                    message: '后端服务异常，拉取赛季信息失败，请刷新或联系管理员',
+                    type: 'warning',
+                    duration: 7000
+                })
+            }
             // delAll(){
             //     const self = this,
             //         length = self.multipleSelection.length;

@@ -2,38 +2,25 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-setting"></i> 自述</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-setting"></i> About </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="ms-doc">
-            <h3>README.md</h3>
+            <h3>About</h3>
             <article>
-                <h1>manage-system</h1>
-                <p>基于Vue.js 2.x系列 + Element UI 的后台管理系统解决方案</p>
+                <h1>COC 风月阁 数据展示</h1>
                 <h2>前言</h2>
-                <p>之前在公司用了Vue + Element组件库做了个后台管理系统，基本很多组件可以直接引用组件库的，但是也有一些需求无法满足。像图片裁剪上传、富文本编辑器、图表等这些在后台管理系统中很常见的功能，就需要引用其他的组件才能完成。从寻找组件，到使用组件的过程中，遇到了很多问题，也积累了宝贵的经验。所以我就把开发这个后台管理系统的经验，总结成这个后台管理系统解决方案。</p>
-                <p>该方案作为一套多功能的后台框架模板，适用于绝大部分的后台管理系统（Web Management System）开发。基于vue.js,使用vue-cli脚手架快速生成项目目录，引用Element UI组件库，方便开发快速简洁好看的组件。分离颜色样式，支持手动切换主题色，而且很方便使用自定义主题色。</p>
+                <p> 为了更好的游戏体验和管理，特地开发了本网页专门收集本部落的数据，并落库持久保存。</p>
+                <p>方便分析玩家各项数据参数如捐兵、收兵等参数评估玩家活跃度和为部落的贡献度</p>
                 <h2>功能</h2>
-                <el-checkbox disabled checked>Element UI</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>登录/注销</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>表格</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>表单</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>图表</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>富文本编辑器</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>markdown编辑器</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>图片拖拽/裁剪上传</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>支持切换主题色</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>列表拖拽排序</el-checkbox>
-                <br>
+                <p> ✅ 以2个小时为粒度收集当前部落玩家数据 </p>
+                <p> ✅ 按照不同时间粒度可视化展示玩家的各项数据指标 </p>
+                <p> ✅ 每个赛季玩家数据展示和排行</p>
+                <p> 待开发 </p>
+                <p> ❌ 联赛评估选人</p>
+                <p> 如果对这个平台有任何意见和开发建议，可以在群里找我提 </p>
+                <h2>技术层面</h2>
+                <P> 主要技术栈 Python + Vue.js + MySQL (同样对技术感兴趣的也可以和我交流) </P>
             </article>
         </div>
     </div>
