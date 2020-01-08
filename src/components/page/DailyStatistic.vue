@@ -2,6 +2,13 @@
     <div>
         <el-page-header @back="goBack" content="日常数据统计图表">
         </el-page-header>
+        <div class="platerInformation">
+            <p>LV: {{ playerInformation.expLevel }} </p>
+            <p>姓名 {{playerInformation.name}}</p>
+            <p>捐兵 {{playerInformation.donations}}</p>
+            <p>收兵 {{playerInformation.donationsReceived}}</p>
+            <p>收兵占总体比例 {{playerInformation.donationRatio}}</p>
+        </div>
         <div class="daily-statistic-content">
             <div class="selectors">
                 <el-date-picker
@@ -95,6 +102,7 @@
             return {
                 api: apiMapBackend.dailyStatistic,
                 playerTag: this.$route.params.playerTag,
+                playerInformation: {},
                 queryParams: {
                     timeTuple: [start, end],
                     intervalType: 2,
@@ -138,6 +146,7 @@
             }
         },
         created() {
+            this.playerInformation = JSON.parse(sessionStorage.getItem('currentPlayerRowDate'))
             this.activeTabName = 'attackWins'
             this.refreshData()
         },
@@ -220,7 +229,7 @@
 
 <style scoped>
     .daily-statistic-content{
-        margin-top: 10em;
+        margin-top: 5em;
     }
     .selectors{
         margin-bottom: 3em;

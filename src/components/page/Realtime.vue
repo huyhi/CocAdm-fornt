@@ -1,54 +1,47 @@
 <template>
-    <div class="row-container">
-        <el-row :gutter="50" class="row-container">
+    <div>
+        <div class="crumbs">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><i class="el-icon-pie-chart"></i> 实时数据 </el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="overview">
+            <el-row>
+<!--                <el-col :span="12">-->
+<!--                    <highcharts :options="hChartOptions">-->
+<!--                    </highcharts>-->
+<!--                </el-col>-->
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">总捐兵数:{{totalDonations}}</div>
+                    <div class="grid-content bg-purple">当前人数:{{totalPlayers}}</div>
+                </el-col>
+            </el-row>
+        </div>
 
-<!--            <el-col :span="6" class="block-container">-->
-<!--                <div class="grid-content bg-purple one-block-content">-->
-<!--                    <el-row>-->
-<!--                        <el-col :span="20"><div class="grid-content">#123</div></el-col>-->
-<!--                        <el-col :span="4"><div class="grid-content">TH1</div></el-col>-->
-<!--                    </el-row>-->
-<!--                    <el-row>-->
-<!--                        <el-col :span="24"><div class="grid-content">name</div></el-col>-->
-<!--                    </el-row>-->
-<!--                    <el-row>-->
-<!--                        <el-col :span="6"><div class="grid-content">1</div></el-col>-->
-<!--                        <el-col :span="6"><div class="grid-content">2</div></el-col>-->
-<!--                        <el-col :span="6"><div class="grid-content">3</div></el-col>-->
-<!--                        <el-col :span="6"><div class="grid-content">4</div></el-col>-->
-<!--                    </el-row>-->
-<!--                </div>-->
-<!--            </el-col>-->
+        <el-table :data="memberList">
+            <el-table-column type="index" :index="indexMethod" label="序号" width="100" fixed>
+            </el-table-column>
+            <el-table-column prop="tag" label="标签" width="150">
+            </el-table-column>
+            <el-table-column prop="name" label="昵称" width="200">
+            </el-table-column>
+            <el-table-column prop="expLevel" label="等级" width="200" align="center" sortable>
+            </el-table-column>
+            <el-table-column prop="donations" label="捐兵" width="200" align="center" sortable>
+            </el-table-column>
+            <el-table-column prop="donationsReceived" label="收兵" width="200" align="center" sortable>
+            </el-table-column>
+            <el-table-column prop="donationRatio" label="捐兵占总体比例" width="200" align="center" sortable>
+            </el-table-column>
+            <el-table-column label="查看" width="150">
+                <el-button icon="el-icon-search" size="small" circle
+                           slot-scope="scope"
+                           @click="showDetail(scope.row)">
+                </el-button>
+            </el-table-column>
+<!--                    @click="showDetail(scope.$index, memberList)">-->
+        </el-table>
 
-<!--            <el-col :span="6"><div class="grid-content bg-purple block-container">2</div></el-col>-->
-<!--            <el-col :span="6"><div class="grid-content bg-purple block-container">3</div></el-col>-->
-<!--            <el-col :span="6"><div class="grid-content bg-purple block-container">4</div></el-col>-->
-<!--            <el-col :span="6"><div class="grid-content bg-purple block-container">5</div></el-col>-->
-<!--            <el-col :span="6"><div class="grid-content bg-purple block-container">6</div></el-col>-->
-
-            <el-col
-                :span="6"
-                class="block-container"
-                v-for="item in memberList">
-                <div
-                    class="grid-content bg-purple one-block-content"
-                    :tag="item.tag"
-                    @click="handleClickPlayerBlock">
-                    <el-row>
-                        <el-col :span="18"><div class="grid-content"> {{ item.tag }} </div></el-col>
-                        <el-col :span="6"><div class="grid-content"> LV: {{ item.expLevel }} </div></el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="24"><div class="grid-content"> {{ item.name }} </div></el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="8"><div class="grid-content">捐:{{ item.donations }} </div></el-col>
-                        <el-col :span="8"><div class="grid-content">收:{{ item.donationsReceived }}</div></el-col>
-<!--                        <el-col :span="8"><div class="grid-content">胜:{{ item.attackWins }}</div></el-col>-->
-                    </el-row>
-                </div>
-            </el-col>
-        </el-row>
     </div>
 </template>
 
@@ -59,21 +52,55 @@
         data() {
             return {
                 memberList: [],
+                totalDonations: '',
+                totalPlayers: '',
+                hChartOptions: {
+                    title: {
+                        text: '等级比例',
+                        align: 'center',
+                    },
+                    plotOptions: {
+                        pie: {
+                            startAngle: -90, // 圆环的开始角度
+                            endAngle: 90,    // 圆环的结束角度
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: '等级占比',
+                        innerSize: '50%',
+                        data: [
+                            ['Firefox',   45.0],
+                            ['IE',       26.8],
+                            ['Chrome', 12.8],
+                            ['Safari',    8.5],
+                            ['Opera',     6.2],
+                        ]
+                    }]
+                }
             }
         },
         created() {
             const self = this
             self.$axios.get(apiMapBackend.realtime).then(res => {
-                console.log(res.data.data.memberList)
-                self.memberList = res.data.data.memberList
-
+                self.memberList = res.data.data.realtime.memberList
+                self.totalPlayers = res.data.data.th_level_ratio.total
+                self.totalDonations = res.data.data.total_donate
             })
         },
         methods: {
             handleClickPlayerBlock(event){
-                console.log(`${apiMapFrontend.dailyStatistic}${event.currentTarget.getAttribute('tag').slice(1)}`)
                 this.$router.push({
                     path: `${apiMapFrontend.dailyStatistic}${event.currentTarget.getAttribute('tag').slice(1)}`
+                })
+            },
+            indexMethod(idx) {
+                return idx + 1
+            },
+            showDetail(towData) {
+                sessionStorage.setItem('currentPlayerRowDate', JSON.stringify(towData))
+                this.$router.push({
+                    path: `${apiMapFrontend.dailyStatistic}${towData.tag.slice(1)}`
                 })
             }
         }
@@ -102,6 +129,15 @@
     }
     .one-block-content:hover{
         background-color: #79BBFF;
+    }
+
+
+    .el-table{
+        margin-top: 2em;
+    }
+    .highcharts-container{
+        width: 10em;
+        height: 10em;
     }
 
 </style>

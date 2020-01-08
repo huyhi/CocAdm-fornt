@@ -52,11 +52,6 @@
                         index: '/realtime',
                         title: '实时数据'
                     },
-                    // {
-                    //     icon: 'el-icon-pie-chart',
-                    //     index: '/dailyStatistic',
-                    //     title: '日常统计数据'
-                    // },
                     {
                         icon: 'el-icon-trophy',
                         index: '/seasonStatistic',
