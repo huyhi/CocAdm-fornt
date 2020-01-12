@@ -2,13 +2,13 @@
     <div>
         <el-page-header @back="goBack" content="日常数据统计图表">
         </el-page-header>
-        <div class="platerInformation">
+        <article class="platerInformation">
             <p>LV: {{ playerInformation.expLevel }} </p>
-            <p>姓名 {{playerInformation.name}}</p>
-            <p>捐兵 {{playerInformation.donations}}</p>
-            <p>收兵 {{playerInformation.donationsReceived}}</p>
-            <p>收兵占总体比例 {{playerInformation.donationRatio}}</p>
-        </div>
+            <p>姓名: {{playerInformation.name}}</p>
+            <p>捐兵: {{playerInformation.donations}}</p>
+            <p>收兵: {{playerInformation.donationsReceived}}</p>
+            <p>收兵占总体比例: {{playerInformation.donationRatio}}</p>
+        </article>
         <div class="daily-statistic-content">
             <div class="selectors">
                 <el-date-picker
@@ -23,8 +23,10 @@
                 <el-select
                     v-model="queryParams.intervalType"
                     placeholder="粒度(日或小时)">
-                    <el-option label="小时" value="1"></el-option>
-                    <el-option label="日" value="2"></el-option>
+                    <el-option v-for="item in selectOptions"
+                               :label="item.label"
+                               :value="item.value">
+                    </el-option>
                 </el-select>
                 <el-input-number
                     v-model="queryParams.intervalStep"
@@ -110,6 +112,16 @@
                 },
                 activeTabName: '',
                 loading: true,
+                selectOptions: [
+                    {
+                        value: 1,
+                        label: '小时'
+                    },
+                    {
+                        value: 2,
+                        label: '日'
+                    }
+                ],
                 hChartOptions: {
                     chart: {
                         type: 'line'
@@ -166,11 +178,11 @@
             }
         },
         methods: {
-            showHttpErrorMsg() {
+            showHttpErrorMsg(msg = '数据服务异常，请刷新重试') {
                 this.$message({
                     showClose: true,
-                    message: '后端服务异常，请刷新重试或联系管理员',
-                    type: 'error',
+                    message: msg,
+                    type: 'warning',
                     duration: 7000
                 })
             },
@@ -199,26 +211,30 @@
                     let [attackWins, donations, donationsReceived, gold, elixir, darkElixir, datetimeTag] = [
                         [], [], [], [], [], [], []
                     ]
-                    res.data.data.forEach((item) => {
-                        attackWins.push(item.attackWins)
-                        donations.push(item.donations)
-                        donationsReceived.push(item.donationsReceived)
-                        gold.push(item.gold)
-                        elixir.push(item.elixir)
-                        darkElixir.push(item.darkElixir)
-                        datetimeTag.push(item.datetimeTag)
-                    })
-                    self.dailyStatisticData = {
-                        attackWins: attackWins,
-                        donations: donations,
-                        donationsReceived: donationsReceived,
-                        gold: gold,
-                        elixir: elixir,
-                        darkElixir: darkElixir
+                    if (res.data.code === 200) {
+                        res.data.data.forEach((item) => {
+                            attackWins.push(item.attackWins)
+                            donations.push(item.donations)
+                            donationsReceived.push(item.donationsReceived)
+                            gold.push(item.gold)
+                            elixir.push(item.elixir)
+                            darkElixir.push(item.darkElixir)
+                            datetimeTag.push(item.datetimeTag)
+                        })
+                        self.dailyStatisticData = {
+                            attackWins: attackWins,
+                            donations: donations,
+                            donationsReceived: donationsReceived,
+                            gold: gold,
+                            elixir: elixir,
+                            darkElixir: darkElixir
+                        }
+                        self.hChartOptions.series[0].data = self.dailyStatisticData[self.activeTabName]
+                        self.hChartOptions.xAxis.categories = datetimeTag
+                        self.loading = false
+                    } else {
+                        self.showHttpErrorMsg(res.data.msg)
                     }
-                    self.hChartOptions.series[0].data = self.dailyStatisticData[self.activeTabName]
-                    self.hChartOptions.xAxis.categories = datetimeTag
-                    self.loading = false
                 }).catch(err => {
                     self.showHttpErrorMsg()
                 })
@@ -229,10 +245,15 @@
 
 <style scoped>
     .daily-statistic-content{
-        margin-top: 5em;
+        margin-top: 2em;
     }
     .selectors{
         margin-bottom: 3em;
+    }
+    article{
+        margin-top: 1em;
+        line-height: 2em;
+        font-style: #303133;
     }
 </style>
 

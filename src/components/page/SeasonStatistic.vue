@@ -8,6 +8,7 @@
         <div class="handle-box">
             <el-select
                 v-model="selectSeasonId"
+                v-loading="loading"
                 placeholder="选择赛季"
                 class="handle-select mr10"
                 @change="selectChange">
@@ -59,11 +60,13 @@
                 selectSeasonId: '',
                 select_word: '',
                 del_list: [],
-                is_search: false
+                is_search: false,
+                loading: true,
             }
         },
         created(){
-            this.getData();
+            this.startUpTip()
+            this.getData()
         },
         computed: {
             data(){
@@ -91,7 +94,12 @@
             getData(){
                 let self = this;
                 self.$axios.get(self.api).then((res) => {
-                    self.seasonList = res.data.data;
+                    if (res.data.code === 200) {
+                        self.seasonList = res.data.data;
+                        self.loading = false
+                    } else {
+                        self.showHttpErrorMsg(res.data.msg)
+                    }
                 }).catch(err => {
                     self.showHttpErrorMsg()
                 })
@@ -107,40 +115,17 @@
             indexMethod(idx) {
                 return idx + 1
             },
-            formatter(row, column) {
-                return row.address;
+            startUpTip() {
+                this.$message.info('请选择赛季列表');
             },
-            filterTag(value, row) {
-                return row.tag === value;
-            },
-            handleEdit(index, row) {
-                this.$message('编辑第'+(index+1)+'行');
-            },
-            handleDelete(index, row) {
-                this.$message.error('删除第'+(index+1)+'行');
-            },
-            showHttpErrorMsg() {
+            showHttpErrorMsg(msg = '数据服务异常，请刷新重试') {
                 this.$message({
                     showClose: true,
-                    message: '后端服务异常，拉取赛季信息失败，请刷新或联系管理员',
+                    message: msg,
                     type: 'warning',
                     duration: 7000
                 })
-            }
-            // delAll(){
-            //     const self = this,
-            //         length = self.multipleSelection.length;
-            //     let str = '';
-            //     self.del_list = self.del_list.concat(self.multipleSelection);
-            //     for (let i = 0; i < length; i++) {
-            //         str += self.multipleSelection[i].name + ' ';
-            //     }
-            //     self.$message.error('删除了'+str);
-            //     self.multipleSelection = [];
-            // },
-            // handleSelectionChange(val) {
-            //     this.multipleSelection = val;
-            // }
+            },
         }
     }
 </script>

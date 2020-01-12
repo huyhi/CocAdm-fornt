@@ -7,19 +7,23 @@
         </div>
         <div class="overview">
             <el-row>
-<!--                <el-col :span="12">-->
-<!--                    <highcharts :options="hChartOptions">-->
-<!--                    </highcharts>-->
-<!--                </el-col>-->
                 <el-col :span="12">
-                    <div class="grid-content bg-purple">总捐兵数:{{totalDonations}}</div>
-                    <div class="grid-content bg-purple">当前人数:{{totalPlayers}}</div>
+                    <article v-loading="loading">
+                        <div class="grid-content bg-purple">总捐兵数: {{totalDonations}}</div>
+                        <div class="grid-content bg-purple">当前人数: {{totalPlayers}}</div>
+                    </article>
                 </el-col>
             </el-row>
         </div>
 
-        <el-table :data="memberList">
+        <el-table :data="memberList" v-loading="loading">
             <el-table-column type="index" :index="indexMethod" label="序号" width="100" fixed>
+            </el-table-column>
+            <el-table-column label="查看" width="100" fixed>
+                <el-button icon="el-icon-search" size="small" circle
+                           slot-scope="scope"
+                           @click="showDetail(scope.row)">
+                </el-button>
             </el-table-column>
             <el-table-column prop="tag" label="标签" width="150">
             </el-table-column>
@@ -33,13 +37,6 @@
             </el-table-column>
             <el-table-column prop="donationRatio" label="捐兵占总体比例" width="200" align="center" sortable>
             </el-table-column>
-            <el-table-column label="查看" width="150">
-                <el-button icon="el-icon-search" size="small" circle
-                           slot-scope="scope"
-                           @click="showDetail(scope.row)">
-                </el-button>
-            </el-table-column>
-<!--                    @click="showDetail(scope.$index, memberList)">-->
         </el-table>
 
     </div>
@@ -54,46 +51,24 @@
                 memberList: [],
                 totalDonations: '',
                 totalPlayers: '',
-                hChartOptions: {
-                    title: {
-                        text: '等级比例',
-                        align: 'center',
-                    },
-                    plotOptions: {
-                        pie: {
-                            startAngle: -90, // 圆环的开始角度
-                            endAngle: 90,    // 圆环的结束角度
-                        }
-                    },
-                    series: [{
-                        type: 'pie',
-                        name: '等级占比',
-                        innerSize: '50%',
-                        data: [
-                            ['Firefox',   45.0],
-                            ['IE',       26.8],
-                            ['Chrome', 12.8],
-                            ['Safari',    8.5],
-                            ['Opera',     6.2],
-                        ]
-                    }]
-                }
+                loading: true,
+                hChartOptions: {}
             }
         },
         created() {
             const self = this
             self.$axios.get(apiMapBackend.realtime).then(res => {
-                self.memberList = res.data.data.realtime.memberList
-                self.totalPlayers = res.data.data.th_level_ratio.total
-                self.totalDonations = res.data.data.total_donate
+                if (res.data.code === 200) {
+                    self.memberList = res.data.data.realtime.memberList
+                    self.totalPlayers = res.data.data.th_level_ratio.total
+                    self.totalDonations = res.data.data.total_donate
+                    self.loading = false
+                } else {
+                    self.showHttpErrorMsg("实时数据接口繁忙")
+                }
             })
         },
         methods: {
-            handleClickPlayerBlock(event){
-                this.$router.push({
-                    path: `${apiMapFrontend.dailyStatistic}${event.currentTarget.getAttribute('tag').slice(1)}`
-                })
-            },
             indexMethod(idx) {
                 return idx + 1
             },
@@ -102,42 +77,25 @@
                 this.$router.push({
                     path: `${apiMapFrontend.dailyStatistic}${towData.tag.slice(1)}`
                 })
-            }
+            },
+            showHttpErrorMsg(msg = '数据服务异常，请刷新重试') {
+                this.$message({
+                    showClose: true,
+                    message: msg,
+                    type: 'warning',
+                    duration: 7000
+                })
+            },
         }
     }
 </script>
 
 <style scoped>
-    .row-container{
-        margin-top: 10em;
-    }
-    .row-container{
-        padding: 0 5em;
-    }
-    .block-container{
-        border-radius: 4px;
-        margin-top: 2em;
-    }
-    .one-block-content{
-        border: 1px solid black;
-        background-color: #D9ECFF;
-        transition: 0.3s;
-        cursor: pointer;
-        border-radius: 1em;
-        padding: 1em;
-        min-height: 8em;
-    }
-    .one-block-content:hover{
-        background-color: #79BBFF;
-    }
-
-
     .el-table{
         margin-top: 2em;
     }
-    .highcharts-container{
-        width: 10em;
-        height: 10em;
+    article{
+        line-height: 2em;
     }
 
 </style>

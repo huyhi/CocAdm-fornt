@@ -27,9 +27,9 @@ export default {
             date.getSeconds()
         ]
         if (H % 2 === 1) {
-            H += 1
-        } else if (M > 0 || S > 0) {
-            H += 2
+            H -= 1
+        } else if ((M > 0 || S > 0) && H !== 0){
+            H -= 2
         }
         return `${y}-${m}-${d} ${H}:00:00`
     }
