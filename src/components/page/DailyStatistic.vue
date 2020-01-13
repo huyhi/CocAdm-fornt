@@ -2,12 +2,15 @@
     <div>
         <el-page-header @back="goBack" content="日常数据统计图表">
         </el-page-header>
-        <article class="platerInformation">
+        <article
+            class="platerInformation"
+            v-loading="playerInfLoading">
             <p>LV: {{ playerInformation.expLevel }} </p>
+            <p>ThLV: {{ playerInformation.townHallLevel }} </p>
             <p>姓名: {{playerInformation.name}}</p>
             <p>捐兵: {{playerInformation.donations}}</p>
             <p>收兵: {{playerInformation.donationsReceived}}</p>
-            <p>收兵占总体比例: {{playerInformation.donationRatio}}</p>
+            <p>本月胜场: {{playerInformation.attackWins}}</p>
         </article>
         <div class="daily-statistic-content">
             <div class="selectors">
@@ -32,7 +35,7 @@
                     v-model="queryParams.intervalStep"
                     :step="step"
                     step-strictly
-                    @click="refreshData">
+                    @click="refreshDailyData">
                 </el-input-number>
                 <el-button type="primary"
                     @click="handleClick">刷新数据</el-button>
@@ -52,7 +55,7 @@
                 </el-tab-pane>
                 <highcharts
                     :options="hChartOptions"
-                    v-loading="loading">
+                    v-loading="chartLoading">
                 </highcharts>
             </el-tabs>
         </div>
@@ -102,7 +105,6 @@
             let [start, end] = [new Date(), new Date()]
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
             return {
-                api: apiMapBackend.dailyStatistic,
                 playerTag: this.$route.params.playerTag,
                 playerInformation: {},
                 queryParams: {
@@ -111,7 +113,8 @@
                     intervalStep: 1,
                 },
                 activeTabName: '',
-                loading: true,
+                playerInfLoading: true,
+                chartLoading: true,
                 selectOptions: [
                     {
                         value: 1,
@@ -158,9 +161,9 @@
             }
         },
         created() {
-            this.playerInformation = JSON.parse(sessionStorage.getItem('currentPlayerRowDate'))
             this.activeTabName = 'attackWins'
-            this.refreshData()
+            this.refreshDailyData()
+            this.refreshPlayerData()
         },
         watch: {
             activeTabName: function (val) {
@@ -195,12 +198,33 @@
                     this.queryParams.intervalStep === 0) {
                     this.$message.warning('请选择必要的参数');
                 } else {
-                    this.refreshData()
+                    this.refreshDailyData()
                 }
             },
-            refreshData() {
+            refreshPlayerData() {
                 const self = this
-                self.$axios.get(`${self.api}${self.playerTag}`, {
+                self.$axios.get(`${apiMapBackend.player}${self.playerTag}`).then(res => {
+                    if (res.data.code === 200) {
+                        self.playerInformation = {
+                            tag: res.data.data.tag,
+                            name: res.data.data.name,
+                            expLevel: res.data.data.expLevel,
+                            townHallLevel: res.data.data.townHallLevel,
+                            attackWins: res.data.data.attackWins,
+                            donations: res.data.data.donations,
+                            donationsReceived: res.data.data.donationsReceived,
+                        }
+                        self.playerInfLoading = false
+                    } else {
+                        self.showHttpErrorMsg(res.data.msg)
+                    }
+                }).catch(err => {
+                    self.showHttpErrorMsg()
+                })
+            },
+            refreshDailyData() {
+                const self = this
+                self.$axios.get(`${apiMapBackend.dailyStatistic}${self.playerTag}`, {
                     params: {
                         start_time: utils.dateFloor(self.queryParams.timeTuple[0]),
                         end_time: utils.dateFloor(self.queryParams.timeTuple[1]),
@@ -231,7 +255,7 @@
                         }
                         self.hChartOptions.series[0].data = self.dailyStatisticData[self.activeTabName]
                         self.hChartOptions.xAxis.categories = datetimeTag
-                        self.loading = false
+                        self.chartLoading = false
                     } else {
                         self.showHttpErrorMsg(res.data.msg)
                     }
@@ -253,7 +277,6 @@
     article{
         margin-top: 1em;
         line-height: 2em;
-        font-style: #303133;
     }
 </style>
 

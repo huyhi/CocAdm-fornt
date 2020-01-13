@@ -57,6 +57,7 @@
         },
         created() {
             const self = this
+            self.startUpTip()
             self.$axios.get(apiMapBackend.realtime).then(res => {
                 if (res.data.code === 200) {
                     self.memberList = res.data.data.realtime.memberList
@@ -72,8 +73,10 @@
             indexMethod(idx) {
                 return idx + 1
             },
+            startUpTip() {
+                this.$message.info('实时数据需要同步官方接口，请耐心等待');
+            },
             showDetail(towData) {
-                sessionStorage.setItem('currentPlayerRowDate', JSON.stringify(towData))
                 this.$router.push({
                     path: `${apiMapFrontend.dailyStatistic}${towData.tag.slice(1)}`
                 })

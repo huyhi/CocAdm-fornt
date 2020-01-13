@@ -4,8 +4,9 @@ const baseUrl = isProd ? 'http://coc.annhuny.com/' : '/api'
 
 const apiMapBackend = {
     seasonList: '/api/season/',
+    realtime: '/api/realtime/',
     dailyStatistic: '/api/daily/',
-    realtime: '/api/realtime/'
+    player: '/api/player/',
 }
 
 const apiMapFrontend = {
