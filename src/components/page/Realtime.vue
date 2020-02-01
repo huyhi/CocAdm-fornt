@@ -25,17 +25,17 @@
                            @click="showDetail(scope.row)">
                 </el-button>
             </el-table-column>
-            <el-table-column prop="tag" label="标签" width="150">
+            <el-table-column prop="tag" label="标签" width="100">
             </el-table-column>
-            <el-table-column prop="name" label="昵称" width="200">
+            <el-table-column prop="name" label="昵称" width="100">
             </el-table-column>
-            <el-table-column prop="expLevel" label="等级" width="200" align="center" sortable>
+            <el-table-column prop="donationRatio" label="捐兵占总体比例" width="100" align="center" sortable>
             </el-table-column>
-            <el-table-column prop="donations" label="捐兵" width="200" align="center" sortable>
+            <el-table-column prop="expLevel" label="等级" width="100" align="center" sortable>
             </el-table-column>
-            <el-table-column prop="donationsReceived" label="收兵" width="200" align="center" sortable>
+            <el-table-column prop="donations" label="捐兵" width="100" align="center" sortable>
             </el-table-column>
-            <el-table-column prop="donationRatio" label="捐兵占总体比例" width="200" align="center" sortable>
+            <el-table-column prop="donationsReceived" label="收兵" width="100" align="center" sortable>
             </el-table-column>
         </el-table>
 
